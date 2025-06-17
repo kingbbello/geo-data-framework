@@ -1,0 +1,31 @@
+services:
+  scraper:
+    build: ./scraper
+    depends_on:
+      - db
+    volumes:
+      - ./scraper:/scraper
+
+  web:
+    build: ./rails-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./rails-app:/app
+    depends_on:
+      - db
+
+  db:
+    image: kartoza/postgis:latest
+    platform: linux/amd64
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: geo_data
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
